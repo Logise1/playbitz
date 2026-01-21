@@ -68,23 +68,35 @@ body {
     gap: 10px;
 }
 
+.main-nav {
+    height: 100%;
+}
+
 .main-nav ul {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 40px;
+    height: 100%;
 }
 
 .main-nav li {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     color: var(--text-secondary);
-    padding: 20px 0;
     position: relative;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.01em;
 }
 
-.main-nav li:hover,
+.main-nav li:hover {
+    color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
 .main-nav li.active {
     color: var(--accent-color);
 }
@@ -97,6 +109,8 @@ body {
     width: 100%;
     height: 3px;
     background-color: var(--accent-color);
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 -2px 5px rgba(0, 123, 255, 0.3);
 }
 
 /* LAYOUT */
@@ -838,6 +852,7 @@ body {
     font-size: 12px;
     font-weight: 600;
 }
+
 /* SAVE SLOTS UI UPDATE */
 .slots-grid-3 {
     display: grid;
@@ -862,7 +877,7 @@ body {
 
 .save-slot-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .save-slot-card.selected {
@@ -879,7 +894,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .slot-icon i {
