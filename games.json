@@ -1,0 +1,170 @@
+[
+    {
+        "id": "pokemon-rojo",
+        "title": "Pokémon Rojo",
+        "description": "Atrapa, entrena y combate. ¡Hazte con todos!",
+        "image": "covers/pokemonrojo.jpg",
+        "heroImage": "covers/pokemonrojo.jpg",
+        "rom": "roms/pokemonrojo.gb",
+        "core": "gba",
+        "tags": [
+            "RPG",
+            "Clásico",
+            "GameBoy"
+        ]
+    },
+    {
+        "id": "pokemon-oro",
+        "title": "Pokémon Oro",
+        "description": "Aventura en Johto a todo color.",
+        "image": "covers/pokemonoro.jpg",
+        "heroImage": "covers/pokemonoro.jpg",
+        "rom": "roms/pokemonoro.gbc",
+        "core": "gba",
+        "tags": [
+            "RPG",
+            "GBC",
+            "Color"
+        ]
+    },
+    {
+        "id": "pokemon-plata",
+        "title": "Pokémon Plata",
+        "description": "Explora Johto y descubre nuevos Pokémon.",
+        "image": "covers/pokemonplata.jpg",
+        "heroImage": "covers/pokemonplata.jpg",
+        "rom": "roms/pokemonplata.gbc",
+        "core": "gba",
+        "tags": [
+            "RPG",
+            "GBC",
+            "Color"
+        ]
+    },
+    {
+        "id": "mario-kart-advance",
+        "title": "Mario Kart: Super Circuit",
+        "description": "Carreras frenéticas en tu bolsillo.",
+        "image": "covers/kartadvance.jpg",
+        "heroImage": "covers/kartadvance.jpg",
+        "rom": "roms/mariokartadvance.gba",
+        "core": "gba",
+        "tags": [
+            "Carreras",
+            "GBA",
+            "Mario"
+        ]
+    },
+    {
+        "id": "super-mario-64",
+        "title": "Super Mario 64",
+        "description": "El clásico que definió las plataformas 3D.",
+        "image": "covers/supermario64.jpg",
+        "heroImage": "covers/supermario64.jpg",
+        "rom": "roms/supermario64.z64",
+        "core": "n64",
+        "tags": [
+            "Plataformas",
+            "N64",
+            "3D"
+        ]
+    },
+    {
+        "id": "ocarina-of-time",
+        "title": "The Legend of Zelda: Ocarina of Time",
+        "description": "Viaja en el tiempo para salvar Hyrule.",
+        "image": "covers/ocarinaoftime.jpg",
+        "heroImage": "covers/ocarinaoftime.jpg",
+        "rom": "roms/ocarinaoftime.n64",
+        "core": "n64",
+        "tags": [
+            "Aventura",
+            "N64",
+            "Épico"
+        ]
+    },
+    {
+        "id": "paper-mario",
+        "title": "Paper Mario",
+        "description": "Una aventura de papel con estilo RPG.",
+        "image": "covers/papermario.jpg",
+        "heroImage": "covers/papermario.jpg",
+        "rom": "roms/papermario.n64",
+        "core": "n64",
+        "tags": [
+            "RPG",
+            "N64",
+            "Mario"
+        ]
+    },
+    {
+        "id": "majoras-mask",
+        "title": "The Legend of Zelda: Majora's Mask",
+        "description": "Salva Termina en 72 horas antes de que la luna caiga.",
+        "image": "covers/majorasmask.jpg",
+        "heroImage": "covers/majorasmask.jpg",
+        "rom": "roms/Legend of Zelda, The - Majora's Mask (Europe) (En,Fr,De,Es).n64",
+        "core": "n64",
+        "tags": [
+            "Aventura",
+            "N64",
+            "Oscuro"
+        ]
+    },
+    {
+        "id": "super-mario-land-2",
+        "title": "Super Mario Land 2: 6 Golden Coins",
+        "description": "Recupera tu castillo de manos de Wario en esta joya de GB.",
+        "image": "covers/marioland.jpg",
+        "heroImage": "covers/marioland.jpg",
+        "rom": "roms/Super Mario Land 2 - 6 Golden Coins (USA, Europe).gb",
+        "core": "gb",
+        "tags": [
+            "Plataformas",
+            "GameBoy",
+            "Clásico"
+        ]
+    },
+    {
+        "id": "super-mario-world",
+        "title": "Super Mario World",
+        "description": "La aventura definitiva de Mario en 16 bits. ¡Hola Yoshi!",
+        "image": "covers/supermarioworld.jpg",
+        "heroImage": "covers/supermarioworld.jpg",
+        "rom": "roms/Super Mario World (USA).sfc",
+        "core": "snes",
+        "tags": [
+            "Plataformas",
+            "SNES",
+            "Legendario"
+        ]
+    },
+    {
+        "id": "super-smash-bros",
+        "title": "Super Smash Bros.",
+        "description": "¡El brawler original! Lucha con tus personajes favoritos de Nintendo.",
+        "image": "covers/smashbros.jpg",
+        "heroImage": "covers/smashbros.jpg",
+        "rom": "roms/Super Smash Bros. (U) [!].z64",
+        "core": "n64",
+        "tags": [
+            "Lucha",
+            "N64",
+            "Multijugador"
+        ]
+    },
+    {
+        "id": "mario-kart-64",
+        "title": "Mario Kart 64",
+        "description": "Super Mario 64 es un juego de plataformas 3D donde exploras niveles para conseguir estrellas y salvar a la princesa Peach.",
+        "image": "covers/mariokart64.jpg",
+        "heroImage": "covers/mariokart64.jpg",
+        "rom": "roms/mariokart64.n64",
+        "core": "n64",
+        "tags": [
+            "Carreras",
+            "N64",
+            "Multijugador"
+        ]
+    }
+]

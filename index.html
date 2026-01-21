@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbitz</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+    <!-- AUTH OVERLAY -->
+    <div id="auth-overlay" class="fullscreen-overlay active" style="background:#f0f2f5; z-index:5000;">
+        <div class="auth-box"
+            style="background:white; padding:40px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.1); width:100%; max-width:400px; text-align:center;">
+            <div style="margin-bottom:20px; font-size:40px; color:#007bff;"><i class="fa-solid fa-gamepad"></i></div>
+            <h2 id="auth-title" style="margin-bottom:10px;">Iniciar Sesión</h2>
+            <p style="color:#666; margin-bottom:30px;">Accede a tu nube retro</p>
+
+            <input type="text" id="auth-username" placeholder="Nombre de usuario"
+                style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:6px; font-size:16px;">
+            <input type="password" id="auth-password" placeholder="Contraseña"
+                style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ddd; border-radius:6px; font-size:16px;">
+
+            <button id="btn-auth-action" onclick="app.login()" class="btn-play-action"
+                style="margin-bottom:15px; background:#007bff;">Entrar</button>
+
+            <p style="font-size:14px; cursor:pointer; color:#007bff;" onclick="app.toggleAuthMode()"
+                id="auth-toggle-msg">¿No tienes cuenta? Regístrate</p>
+            <p id="auth-error" style="color:red; font-size:12px; margin-top:10px; display:none;"></p>
+        </div>
+    </div>
+
+    <!-- LOADING SCREEN OVERLAY -->
+    <div id="full-loader" class="fullscreen-overlay">
+        <div class="loader"></div>
+        <h2 id="loader-text">Cargando Juego...</h2>
+    </div>
+
+    <!-- SAVE SLOT SELECTION OVERLAY -->
+    <div id="save-selector" class="fullscreen-overlay"
+        style="background: rgba(240,242,245,0.95); backdrop-filter: blur(10px);">
+        <div class="save-slots-container">
+            <h2>Selecciona una Partida</h2>
+            <p>Elige donde continuar tu aventura</p>
+            <div class="slots-grid">
+                <div class="save-slot" onclick="app.loadSlot(1)">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <h4>Slot 1</h4>
+                    <span class="slot-info">Vacío</span>
+                </div>
+                <div class="save-slot" onclick="app.loadSlot(2)">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <h4>Slot 2</h4>
+                    <span class="slot-info">Vacío</span>
+                </div>
+                <div class="save-slot" onclick="app.loadSlot(3)">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <h4>Slot 3</h4>
+                    <span class="slot-info">Vacío</span>
+                </div>
+            </div>
+            <button onclick="app.cancelGameStart()"
+                style="margin-top:20px; padding:10px 20px; cursor:pointer; background:transparent; border:1px solid #ccc; border-radius:4px;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MANUAL SAVE OVERLAY -->
+    <div id="manual-save-overlay" class="fullscreen-overlay"
+        style="background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);">
+        <div style="background:white; padding:30px; border-radius:12px; max-width:500px; width:90%; text-align:center;">
+            <h2 style="margin-bottom:20px; color:#333;">Guardado en Nube</h2>
+            <p style="color:#666; margin-bottom:30px;">Sincroniza tu partida con el servidor para continuar después.</p>
+
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <button onclick="app.triggerCloudSaveSequence()"
+                    style="background:#007bff; color:white; padding:15px; border:none; border-radius:8px; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:bold; box-shadow:0 4px 15px rgba(0,123,255,0.3);">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> GENERAR Y SUBIR
+                </button>
+
+                <p style="font-size:12px; color:#999;">Esto extraerá el estado actual y lo subirá a tu cuenta.</p>
+            </div>
+
+            <button onclick="app.exitWithoutSync()"
+                style="margin-top:20px; color:#555; background:none; border:2px solid #eee; padding: 10px 20px; border-radius: 6px; cursor:pointer; font-weight:600;">
+                Cancelar / Seguir Jugando
+            </button>
+        </div>
+    </div>
+
+    <!-- SETTINGS OVERLAY -->
+    <div id="settings-overlay" class="fullscreen-overlay" style="background:rgba(240,242,245,0.95);">
+        <div
+            style="background:white; padding:40px; border-radius:16px; width:100%; max-width:500px; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <h2 style="margin:0;">Ajustes</h2>
+                <button onclick="app.closeSettings()"
+                    style="background:transparent; border:none; font-size:20px; cursor:pointer; color:#777;"><i
+                        class="fa-solid fa-times"></i></button>
+            </div>
+
+            <!-- Profile Section -->
+            <div style="margin-bottom:30px;">
+                <h4 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">Perfil</h4>
+                <div style="display:flex; align-items:center; gap:20px;">
+                    <div style="position:relative; width:80px; height:80px;">
+                        <img id="settings-avatar-preview" src=""
+                            style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:1px solid #ddd;">
+                        <label for="avatar-upload"
+                            style="position:absolute; bottom:0; right:0; background:#007bff; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+                            <i class="fa-solid fa-camera" style="font-size:12px;"></i>
+                        </label>
+                        <input type="file" id="avatar-upload" style="display:none;" accept="image/*"
+                            onchange="app.handleAvatarUpload(this)">
+                    </div>
+                    <div>
+                        <p style="font-size:14px; color:#555; margin-bottom:5px;">Foto de Perfil</p>
+                        <p style="font-size:11px; color:#999;">Automáticamente ajustada a 100x100px.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gameplay Section -->
+            <div style="margin-bottom:30px;">
+                <h4 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">Juego</h4>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; font-size:14px; margin-bottom:10px; font-weight:600;">Frecuencia
+                        Autoguardado</label>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="range" id="autosave-slider" min="1" max="10" step="1" value="2"
+                            oninput="document.getElementById('autosave-val').innerText = this.value + ' min'">
+                        <span id="autosave-val"
+                            style="min-width:50px; text-align:right; font-weight:bold; color:#007bff;">2 min</span>
+                    </div>
+                    <p style="font-size:11px; color:#999; margin-top:5px;">El juego guardará automáticamente cada X
+                        minutos mientras juegas.</p>
+                </div>
+
+                <div style="margin-bottom:20px; display:flex; gap:15px; align-items:center;">
+                    <input type="checkbox" id="private-mode-check" style="width:20px; height:20px;">
+                    <div>
+                        <label for="private-mode-check" style="display:block; font-size:14px; font-weight:600;">Modo
+                            Invisible</label>
+                        <p style="font-size:11px; color:#999; margin:0;">Aparecerás como "Offline" para los demás
+                            jugadores.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="app.saveSettings()" class="btn-play-action">
+                <i class="fa-solid fa-check"></i> Guardar Cambios
+            </button>
+
+        </div>
+    </div>
+
+    <!-- CUSTOM ESC MENU -->
+    <div id="esc-menu" class="esc-menu-overlay">
+        <div class="esc-menu">
+            <h3 style="text-align:center; margin-bottom:15px;">Pausa</h3>
+
+            <button class="btn-resume" onclick="app.resumeGame()">Reanudar</button>
+            <button class="btn-option" onclick="app.saveAndExit()"
+                style="background:#28a745; color:white; margin-top:10px;">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar y Salir
+            </button>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                <button class="btn-option" onclick="app.saveState()"
+                    style="background:#6c757d; color:white; font-size:12px; padding:10px;"><i
+                        class="fa-solid fa-save"></i> Guardar</button>
+                <button class="btn-option" onclick="app.loadState()"
+                    style="background:#17a2b8; color:white; font-size:12px; padding:10px;"><i
+                        class="fa-solid fa-upload"></i> Cargar</button>
+            </div>
+
+            <button class="btn-exit" onclick="app.exitGame()"
+                style="background:transparent; color:#dc3545; border:1px solid #dc3545; margin-top:10px;">Salir sin
+                Guardar</button>
+        </div>
+    </div>
+
+    <!-- MAIN UI -->
+    <header class="main-header" id="app-header">
+        <div class="logo-area" onclick="app.navigateTo('store')">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>Playbitz</span>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li class="active" data-tab="store">Tienda</li>
+                <li data-tab="library">Mi Biblioteca</li>
+                <li data-tab="leaderboard">Clasificación</li>
+                <li data-tab="library">Mi Biblioteca</li>
+                <li data-tab="leaderboard">Clasificación</li>
+                <li data-tab="community">Jugadores</li>
+            </ul>
+        </nav>
+        <div style="margin-left:auto; display:flex; gap:15px; align-items:center;">
+            <div id="user-status-indicator"
+                style="display:flex; align-items:center; gap:5px; font-size:12px; color:#28a745;">
+                <span class="status-dot"></span> Online
+            </div>
+
+            <div class="user-menu-container" onclick="app.toggleUserMenu()">
+                <img id="header-user-avatar" src="https://ui-avatars.com/api/?name=Guest&background=random"
+                    style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid #ccc;">
+                <div id="user-dropdown" class="user-menu-dropdown">
+                    <div class="user-menu-item" onclick="event.stopPropagation(); app.openSettings()">
+                        <i class="fa-solid fa-gear"></i> Configuración
+                    </div>
+                    <!-- Added stopPropagation to prevent re-toggling if clicking the item specifically, though container click handles toggle -->
+                    <div class="user-menu-item danger" onclick="event.stopPropagation(); app.logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass" style="color:#999"></i>
+                <input type="text" placeholder="Buscar..." id="search-input">
+            </div>
+
+            <div class="sidebar-section" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+                <h3 style="padding: 0 10px;">TUS JUEGOS</h3>
+                <ul id="mini-library-list" style="overflow-y:auto; padding-right:5px; flex:1;">
+                    <!-- JS Injected Games -->
+                    <li class="empty-msg">Sin juegos</li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-view">
+
+            <!-- STORE VIEW -->
+            <section id="store-view" class="view-section active">
+                <h2 style="margin-bottom:20px;">Tienda</h2>
+                <div id="store-grid" class="games-grid">
+                    <p>Cargando catálogo...</p>
+                </div>
+            </section>
+
+            <!-- COMMUNITY/PLAYERS VIEW -->
+            <section id="community-view" class="view-section">
+                <h2 style="margin-bottom:20px;">Jugadores Online</h2>
+                <div id="community-grid" class="games-grid">
+                    <!-- Global Users Injected Here -->
+                    <p style="color:#777;">Cargando jugadores online...</p>
+                </div>
+            </section>
+
+            <!-- LEADERBOARD VIEW -->
+            <section id="leaderboard-view" class="view-section">
+                <div class="leaderboard-container">
+                    <div class="leaderboard-header">
+                        <span>Jugador</span>
+                        <span>Tiempo Total Computado</span>
+                    </div>
+                    <ul id="global-leaderboard-list" class="leaderboard-list">
+                        <!-- Injected -->
+                        <li style="padding:20px; text-align:center;">Cargando clasificación...</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- DETAILS VIEW (Replaces old Game View mostly) -->
+            <section id="details-view" class="view-section">
+                <!-- Hero Content Populated by JS -->
+                <div id="game-hero" class="game-details-hero">
+                    <!-- Content injected -->
+                </div>
+
+                <div id="active-players-container" class="active-now-section" style="display:none;">
+                    <h3><i class="fa-solid fa-earth-americas" style="color:#28a745;"></i> Jugando Ahora</h3>
+                    <div id="active-players-grid" class="active-users-grid"></div>
+                </div>
+
+                <div class="leaderboard-container" style="margin-top:30px;">
+                    <div class="leaderboard-header">
+                        <span>Top Jugadores (Este Juego)</span>
+                        <span>Tiempo</span>
+                    </div>
+                    <ul id="game-leaderboard-list" class="leaderboard-list"></ul>
+                </div>
+            </section>
+
+            <!-- LIBRARY VIEW (Grid) - Opional now since we have sidebar -->
+            <section id="library-view" class="view-section">
+                <h2 style="margin-bottom:30px;">Biblioteca Grid</h2>
+                <div id="library-grid-target" class="library-grid"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- EMULATOR CONTAINER (Hidden by default) -->
+    <div id="emulator-wrapper" class="emulator-wrapper">
+        <!-- Iframe injected here -->
+    </div>
+
+    <!-- AUTO SAVE INDICATOR -->
+    <div id="auto-save-indicator" class="auto-save-indicator">
+        <img src="loading.gif" alt="Saving" />
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
