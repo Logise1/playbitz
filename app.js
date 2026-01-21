@@ -1551,6 +1551,7 @@ const app = {
     },
 
     listenToGlobalUsers: () => {
+        if (!app.state.user) return;
         // Fetch users active in last 15 minutes (or just lastSeen desc limit 50)
         // Since we can't do complex querying easily, we just grab recent modified or lastSeen
         app.state.globalUsers = [];
@@ -1561,7 +1562,7 @@ const app = {
                 const now = Date.now();
                 snapshot.forEach(doc => {
                     const d = doc.data();
-                    if (doc.id === app.state.user.uid) return; // Skip self
+                    if (app.state.user && doc.id === app.state.user.uid) return; // Skip self
 
                     // Filter offline/old if desired, but user asked for "All players playing"
                     // We check if lastSeen is within ~10 mins to consider them "Active"
