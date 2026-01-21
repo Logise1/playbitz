@@ -1482,9 +1482,21 @@ const app = {
             return;
         }
         app.state.myGames.forEach(game => {
+            // HYDRATION: Ensure we have static data from catalog
+            let displayGame = game;
+            if (app.gamesDB) {
+                const catalogGame = app.gamesDB.find(g => g.id === game.id);
+                if (catalogGame) {
+                    displayGame = { ...catalogGame, ...game };
+                }
+            }
+
+            // Skip if still missing title (invalid/ghost game)
+            if (!displayGame.title) return;
+
             const li = document.createElement('li');
-            li.innerHTML = `<img src="${game.image}" style="width:20px; height:20px; object-fit:cover; border-radius:2px;"> ${game.title}`;
-            li.onclick = () => app.showGameDetails(game.id);
+            li.innerHTML = `<img src="${displayGame.image || 'img/no-icon.png'}" style="width:20px; height:20px; object-fit:cover; border-radius:2px;"> ${displayGame.title}`;
+            li.onclick = () => app.showGameDetails(displayGame.id);
             list.appendChild(li);
         });
     },
@@ -1500,14 +1512,26 @@ const app = {
         }
 
         app.state.myGames.forEach(game => {
+            // HYDRATION: Ensure we have static data from catalog
+            let displayGame = game;
+            if (app.gamesDB) {
+                const catalogGame = app.gamesDB.find(g => g.id === game.id);
+                if (catalogGame) {
+                    displayGame = { ...catalogGame, ...game };
+                }
+            }
+
+            // Skip if still missing title
+            if (!displayGame.title) return;
+
             const card = document.createElement('div');
             card.className = 'game-card'; // Reuse game-card style
-            card.onclick = () => app.showGameDetails(game.id);
+            card.onclick = () => app.showGameDetails(displayGame.id);
             card.innerHTML = `
-                <div class="card-image"><img src="${game.image}"></div>
+                <div class="card-image"><img src="${displayGame.image || 'img/no-img.png'}"></div>
                 <div class="card-info">
-                    <h4>${game.title}</h4>
-                    <div style="font-size:12px; color:#777; margin-top:5px;"><i class="fa-solid fa-clock"></i> ${app.formatPlaytime(game.playtime)}</div>
+                    <h4>${displayGame.title}</h4>
+                    <div style="font-size:12px; color:#777; margin-top:5px;"><i class="fa-solid fa-clock"></i> ${app.formatPlaytime(displayGame.playtime)}</div>
                 </div>`;
             grid.appendChild(card);
         });
