@@ -166,5 +166,47 @@
             "N64",
             "Multijugador"
         ]
+    },
+    {
+        "id": "crash-bandicoot",
+        "title": "Crash Bandicoot",
+        "description": "Ayuda a Crash a salvar a su novia Tawna del Dr. Neo Cortex.",
+        "image": "covers/crashbandicoot.webp",
+        "heroImage": "covers/crashbandicoot.webp",
+        "rom": "roms/Crash Bandicoot (USA).bin",
+        "core": "psx",
+        "tags": [
+            "Plataformas",
+            "PSX",
+            "Clásico"
+        ]
+    },
+    {
+        "id": "kirby-64",
+        "title": "Kirby 64: The Crystal Shards",
+        "description": "La primera aventura de Kirby en 3D.",
+        "image": "covers/Kirby64cover.webp",
+        "heroImage": "covers/Kirby64cover.webp",
+        "rom": "roms/Kirby 64 - The Crystal Shards (Europe).n64",
+        "core": "n64",
+        "tags": [
+            "Plataformas",
+            "N64",
+            "Aventura"
+        ]
+    },
+    {
+        "id": "yoshis-island",
+        "title": "Super Mario World 2: Yoshi's Island",
+        "description": "Protege a Baby Mario en este colorido juego de plataformas.",
+        "image": "covers/yoshisisland.jpg",
+        "heroImage": "covers/yoshisisland.jpg",
+        "rom": "roms/Super Mario World 2 - Yoshi's Island (Europe) (En,Fr,De) (Rev 1).sfc",
+        "core": "snes",
+        "tags": [
+            "Plataformas",
+            "SNES",
+            "Yoshi"
+        ]
     }
 ]

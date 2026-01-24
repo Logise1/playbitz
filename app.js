@@ -835,7 +835,8 @@ const app = {
             'n64': 'n64',
             'nes': 'nes',
             'snes': 'snes',
-            'sega': 'segaMD'
+            'sega': 'segaMD',
+            'psx': 'psx'
         };
         const core = CORE_MAP[game.core] || 'gba';
 
